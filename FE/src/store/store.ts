@@ -1,32 +1,39 @@
 import { reactive, readonly } from 'vue';
 
-interface Istate {
+interface IUser {
   userName: string;
   userLastName: string;
   timeStamp: string;
+}
+interface IState {
   loading: boolean;
+  listOfResrevations: IUser[];
 }
 
-const stateObj: Istate = {
+const stateObj = {
   userName: '',
   userLastName: '',
   timeStamp: '',
   loading: false,
+  listOfResrevations: [],
 };
 
 const reactiveState = reactive(stateObj);
 
-export const assignUserName = (newUserName: Istate['userName']) => {
+export const assignUserName = (newUserName: IUser['userName']) => {
   reactiveState.userName = newUserName;
 };
-export const assignUserLastName = (newUserLastName: Istate['userLastName']) => {
+export const assignUserLastName = (newUserLastName: IUser['userLastName']) => {
   reactiveState.userLastName = newUserLastName;
 };
-export const assignTimeStamp = (newTimeStamp: Istate['timeStamp']) => {
+export const assignTimeStamp = (newTimeStamp: IUser['timeStamp']) => {
   reactiveState.timeStamp = newTimeStamp;
 };
-export const setLoading = (isLoading: Istate['loading']) => {
+export const setLoading = (isLoading: IState['loading']) => {
   reactiveState.loading = isLoading;
+};
+export const setlistOfResrevations = (newListOfResrevations: any) => {
+  reactiveState.listOfResrevations = newListOfResrevations;
 };
 
 export const state = readonly(reactiveState);

@@ -1,16 +1,17 @@
-import { setLoading } from '@/store/store';
+import { setLoading, setlistOfResrevations } from '@/store/store';
+import { getAll } from '@/services/dataService';
 
 const init = () => {
   setLoading(true);
-  // loadVersion();
-  // loadConfig(settings.local.configUrl)
-  //   .then((response) => {
-  //     applySettings(response.data);
-  //   })
-  //   .finally(() => {
-  //       setLoading(false);
-  //     }
-  //   )
+  getAll().then((res: any) => {
+    if (res.data && res.data.length > 0) {
+      setlistOfResrevations(res.data);
+    } else {
+      console.error('No data found');
+    }
+  }).finally(
+    setLoading(false),
+  );
 };
 
 export default init;

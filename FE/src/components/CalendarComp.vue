@@ -1,18 +1,19 @@
 <template>
-  <div class="container">
+  <div v-if="!state.loading" class="container">
     <div class="picker">
       <DatePicker
         v-model="date"
         mode="dateTime"
         :timezone="timezone"
       />
-      <button @click="toggleInputComponent">Select this time</button>
+      <button :disabled="timeIsBooked" @click="toggleInputComponent">
+        Select this time
+      </button>
     </div>
-
     <NameInputComp
       v-if="nameInputToggle"
       @close="toggleInputComponent"
-      :selectedTime="date.toISOString()"
+      :selectedTime="date"
     />
   </div>
 </template>
@@ -20,6 +21,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { DatePicker } from 'v-calendar';
+import { state } from '@/store/store';
 import NameInputComp from '@/components/NameInputComp.vue';
 
 export default defineComponent({
@@ -33,11 +35,17 @@ export default defineComponent({
       date: new Date(),
       timezone: '',
       nameInputToggle: false,
+      timeIsBooked: false,
     };
   },
   methods: {
     toggleInputComponent() {
       this.nameInputToggle = !this.nameInputToggle;
+    },
+  },
+  computed: {
+    state() {
+      return state;
     },
   },
 });
