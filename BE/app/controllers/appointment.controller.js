@@ -26,9 +26,10 @@ exports.create = (req, res) => {
     });
 };
 
-exports.findAll = (req, res) => {
-  const name = req.query.name;
-  var condition = name ? { name: { $regex: new RegExp(name), $options: "i" } } : {};
+exports.findReservations = (req, res) => {
+  const d = new Date();
+  const weekAgo = d.setDate(d.getDate() - 7);
+  const condition = {'reservationTime' : { $gte : weekAgo }};
 
   Appointment.find(condition)
     .then(data => {

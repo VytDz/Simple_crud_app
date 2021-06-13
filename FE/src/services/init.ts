@@ -1,12 +1,13 @@
 import { setLoading, setlistOfResrevations } from '@/store/store';
-import { getAll } from '@/services/dataService';
+import { findReservations } from '@/services/dataService';
 
-const init = () => {
+const init = ():void => {
   setLoading(true);
-  getAll().then((res: any) => {
+  findReservations().then((res: any) => {
     if (res.data && res.data.length > 0) {
       setlistOfResrevations(res.data);
     } else {
+      // eslint-disable-next-line
       console.error('No data found');
     }
   }).finally(

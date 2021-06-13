@@ -7,7 +7,7 @@ const http = axios.create({
   },
 });
 
-export const getAll = ():any => http.get('/appointments');
+export const findReservations = ():any => http.get('/appointments');
 export const get = (id: string) => http.get(`/appointments/${id}`);
 export const create = (data: { name: string; lastName: string; timeStamp: any; }) => http.post('/appointments', data);
 export const update = (id: string, data: { name: string; lastName: string; timeStamp: any; }) => http.put(`/appointments/${id}`, data);

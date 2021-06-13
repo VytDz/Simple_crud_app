@@ -5,7 +5,7 @@ module.exports = app => {
 
   router.post("/", appointments.create);
 
-  router.get("/", appointments.findAll);
+  router.get("/", appointments.findReservations);
 
   router.get("/:id", appointments.findOne);
 

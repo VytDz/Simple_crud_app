@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <h1>Doctor App</h1>
+    <h1>Time reservation for doctors appointment</h1>
   </div>
 </template>
 

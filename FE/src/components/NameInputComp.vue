@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="message" v-if="showMessage">Sorry this time is already taken</div>
+    <div class="message" v-if="showMessage"> {{message}} </div>
     <div class="inputs">
       <input type="text" name="name" v-model="name" placeholder="Name" />
       <input
@@ -19,6 +19,7 @@
 import { defineComponent } from 'vue';
 import { state } from '@/store/store';
 import { create } from '@/services/dataService';
+import moment from 'moment';
 import init from '@/services/init';
 
 export default defineComponent({
@@ -35,26 +36,63 @@ export default defineComponent({
   data() {
     return {
       dateToSave: this.selectedTime,
+      reservations: state.listOfResrevations,
       name: '',
       lastName: '',
       showMessage: false,
+      message: '',
     };
   },
   methods: {
     close() {
       this.$emit('close');
     },
+    handleMessage() {
+      this.showMessage = true;
+      setTimeout(() => this.close(), 3000);
+    },
     ifBooked() {
-      const reservations = state.listOfResrevations;
-      const sharedTime = reservations.some(
-        (element: any) => element.reservationTime === this.selectedTime.toISOString(),
+      const sharedTime = this.reservations.some(
+        (item: any) => item.reservationTime === this.selectedTime.toISOString(),
       );
-      if (reservations.length > 0 && sharedTime) {
-        this.showMessage = true;
-        setTimeout(() => this.close(), 5000);
+
+      const lessThan = moment(this.selectedTime).valueOf() - (15 * 60000);
+      const moreThan = moment(this.selectedTime).valueOf() + (15 * 60000);
+      const lessOrMoreThan15Min = this.reservations.some(
+        (item: any) => moment(item.reservationTime).valueOf() < moreThan
+          && new Date(item.reservationTime).getTime() > lessThan,
+      );
+      if (this.reservations.length > 0) {
+        switch (true) {
+          case sharedTime:
+            this.message = 'Sorry this time is already taken';
+            this.handleMessage();
+            break;
+          case lessOrMoreThan15Min:
+            this.message = 'Sorry this time is too close to another appointment';
+            this.handleMessage();
+            break;
+          default:
+            break;
+        }
       }
     },
+    isRegisteredThisWeek() {
+      const weeksAppointments = this.reservations.filter(
+        (item: any) => moment().week() === moment(item.reservationTime).week(),
+      );
+
+      return weeksAppointments.find(
+        (item: any) => item.name === this.name && item.lastName === this.lastName,
+      );
+    },
     submit() {
+      if (this.isRegisteredThisWeek()) {
+        this.message = 'Sorry you have already registered this week';
+        this.handleMessage();
+        this.close();
+        return;
+      }
       create({
         name: this.name,
         lastName: this.lastName,
@@ -84,7 +122,9 @@ export default defineComponent({
     transform: translateX(-50%);
     display: flex;
     justify-content: center;
-    background-color: grey;
+    background-color: white;
+    border: 1px black solid;
+    border-radius: 10px;
 
     .message{
       width: 50vw;
@@ -102,6 +142,7 @@ export default defineComponent({
       input {
         font-size: 2vh;
         margin-bottom: 1vh;
+        border-radius: 5px;
       }
       .submit {
         background: greenyellow;
